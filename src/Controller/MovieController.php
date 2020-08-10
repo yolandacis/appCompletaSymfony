@@ -51,6 +51,9 @@ class MovieController extends ApiController
     */
     public function increaseCount($id, EntityManagerInterface $em, MovieRepository $movieRepository)
     {
+        /*if (! $this->isAuthorized()) {
+            return $this->respondUnauthorized();
+        }*/
         $movie = $movieRepository->find($id);
 
         if (! $movie) {
@@ -66,4 +69,60 @@ class MovieController extends ApiController
         ]);
     }
 
+     /**
+    * @Route("/movies/{id}/update", methods="POST")
+    */
+    public function update(Request $request, $id, EntityManagerInterface $em, MovieRepository $movieRepository)
+    {
+       
+        $request = $this->transformJsonBody($request);
+
+        if (! $request) {
+            return $this->respondValidationError('Realice una solicitud válida!');
+        }
+
+        // validate the title
+        if (! $request->get('title')) {
+            return $this->respondValidationError('Ingrese el título de la película');
+        }
+
+        $movie = $movieRepository->find($id);
+        if (! $movie) {
+            return $this->respondNotFound();
+        }
+
+        $movie->setTitle($request->get('title'));
+        //$movie->setCount($movie->getCount() + 1);
+        $em->persist($movie);
+        $em->flush();
+
+        return $this->respond(['title' => $movie->getTitle()]);
+        
+    /*     $serializer = new Serializer([new ObjectNormalizer()]);
+        return new JsonResponse($serializer->normalize($movie, 'json', [ 'attributes' => [
+            'id'
+        ]]), 200);*/
+      
+    }
+
+     /**
+    * @Route("/movies/{id}", methods="DELETE")
+    */
+    public function delete($id, EntityManagerInterface $em, MovieRepository $movieRepository)
+    {
+        /*if (! $this->isAuthorized()) {
+            return $this->respondUnauthorized();
+        }*/
+
+        $movie = $movieRepository->find($id);
+
+        if (! $movie) {
+            return $this->respondNotFound();
+        }
+
+        $em->remove($movie);
+        $em->flush();
+
+        return $this->respond([]);
+    }
 }

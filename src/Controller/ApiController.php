@@ -20,7 +20,7 @@ class ApiController
     {
         return $this->statusCode;
     }
-
+                                                             
     /**
      * Sets the value of statusCode.
      *
@@ -160,8 +160,8 @@ class ApiController
             $jwtVerifier = (new \Okta\JwtVerifier\JwtVerifierBuilder())
                             ->setAdaptor(new \Okta\JwtVerifier\Adaptors\SpomkyLabsJose())
                             ->setAudience('api://default')
-                            ->setClientId('{yourClientId}')
-                            ->setIssuer('https://{yourOktaDomain}/oauth2/default')
+                            ->setClientId('0oakfigubt2Mu24IZ4x6')
+                            ->setIssuer('https://dev-532237.okta.com/oauth2/default')
                             ->build();
 
             // Verify the JWT from the Authorization Header.
